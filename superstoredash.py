@@ -78,8 +78,8 @@ y_pred=rf.predict(x_test)
 rmse=np.sqrt(mean_squared_error(y_test, y_pred))
 r2=r2_score(y_test, y_pred)
 st.subheader("Model Performance (used Random Forest Regressor)")
-st.write(f"**RMSE:** {rmse:.2f}")
-st.write(f"**R² Score:** {r2:.2f}")
+st.info(f"**RMSE:** {rmse:.2f}")
+st.info(f"**R² Score:** {r2:.2f}")
 
 #visualize results
 results = pd.DataFrame({"Actual Sales": y_test, "Predicted Sales": y_pred})
@@ -89,3 +89,4 @@ chart.add_shape(type="line", x0=y_test.min(), y0=y_test.min(),
                x1=y_test.max(), y1=y_test.max(),
                line=dict(color="red", dash="dash"))
 st.plotly_chart(chart, use_container_width=True)
+
