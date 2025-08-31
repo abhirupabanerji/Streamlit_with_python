@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import mean_squared_error, r2_score
 
 df=pd.read_csv('superstore.csv')
 st.set_page_config(page_title="Superstore Dashboard", page_icon="🛒", layout="wide")
@@ -56,5 +59,32 @@ if selected_categories and selected_mode and selected_region:
 
 else:
     st.warning("No filters selected yet. Use them to display the charts!")
+    
+from sklearn.ensemble import RandomForestRegressor
+x=df[['Discount', 'Quantity', 'Profit']]
+y=df['Sales']
+
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size=0.2, random_state=42)
+rf=RandomForestRegressor(n_estimators=200, random_state=42)
+rf.fit(x_train, y_train)
+y_pred=rf.predict(x_test)
+
+#check model performance
+rmse=np.sqrt(mean_squared_error(y_test, y_pred))
+r2=r2_score(y_test, y_pred)
+st.subheader("Model Performance (used Random Forest Regressor)")
+st.write(f"**RMSE:** {rmse:.2f}")
+st.write(f"**R² Score:** {r2:.2f}")
+
+#visualize results
+results = pd.DataFrame({"Actual Sales": y_test, "Predicted Sales": y_pred})
+chart = px.scatter(results, x="Actual Sales", y="Predicted Sales", opacity=0.6,
+                  title="Actual vs Predicted Sales using Random Forest")
+chart.add_shape(type="line", x0=y_test.min(), y0=y_test.min(),
+               x1=y_test.max(), y1=y_test.max(),
+               line=dict(color="red", dash="dash"))
+st.plotly_chart(chart, use_container_width=True)
+
+
 
 
