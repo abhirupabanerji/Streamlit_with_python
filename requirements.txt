@@ -1,4 +1,4 @@
 pandas
 plotly.express
 scikit-learn
-streamlit
+streamlit==1.47.0
